@@ -1,0 +1,52 @@
+<html>
+	<body>
+		<script type="text/javascript">
+			class Player {
+				static speed = 7;
+				static counter = 0;
+				#privateM = 99;
+				constructor(x,y,color) {
+					this.x = x;
+					this.y = y;
+					this.color = color;
+					this.id = Player.counter++;
+				}
+
+				get getPrivateM() {
+					return this.#privateM;
+				}
+
+				set privateM(n) {
+					this.#privateM = n * 2;
+				}
+
+				update() {
+					this.x += 2;
+					this.y = privateF(this.y);
+					function privateF(y) {
+						return y-1;
+					} 
+				}
+
+			}
+
+
+			const p1 = new Player(1,1,'red');
+			const p2 = new Player(10,10, 'blue');
+			p1.update();
+			p2.update();
+
+			console.log(p1,p2);
+			console.log(Player.speed);
+
+			p1.privateM = 88;
+
+			console.log(p1.getPrivateM);
+			console.log(p1.privateM);
+
+
+		</script>
+
+
+	</body>
+</html>>
