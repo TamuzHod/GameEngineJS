@@ -2,11 +2,12 @@ class Board {
 	#privateC;
 	#privateC_Context;
 	#privateMatrix;
-	#physicsRR =  Math.floor(1000 / 1000);
-	#graphicsRR =  Math.floor(1000 / 30);
+	#physicsRR =  Math.floor(2);
 	#garphicEngine;
-	#dimentionsX
-	#dimentionsY
+	#dimentionsX;
+	#dimentionsY;
+	#physicsLoop;
+	#stop = true;
 
 
 	constructor(dimentionsX, dimentionsY, gameObjects, backgroundColor = 'white', canvasID = 'gc') {
@@ -21,6 +22,7 @@ class Board {
 	}
 
 	eventDelegator(event){
+		event.preventDefault();
 		this.gameObjects.forEach(function (entity){
 			if(entity.handleEvent){
 				entity.handleEvent(event);
@@ -31,17 +33,23 @@ class Board {
 
 	startGame(){
 		let that = this;
-		setInterval(that.updatePhysics.bind(this), this.#physicsRR);
-		setInterval(that.updateGraphics.bind(this), this.#graphicsRR);
+		this.#physicsLoop = setInterval(that.updatePhysics.bind(this), this.#physicsRR);
+		window.requestAnimationFrame(that.updateGraphics.bind(this));
 		window.addEventListener('keydown', function (e) {
             that.eventDelegator(e);
         })
-        window.addEventListener('keypress', function (e) {
+        document.addEventListener('keypress', function (e) {
             that.eventDelegator(e);
         })
         window.addEventListener('keyup', function (e) {
             that.eventDelegator(e);
         })
+        this.#stop = false;
+	}
+
+	pauseGame(){
+		clearInterval(this.#physicsLoop);
+		this.#stop = true;
 	}
 
 	getPos(){
@@ -95,7 +103,6 @@ class Board {
 					}
 				});
 			});
-
 		}
 
 		posDic = this.getPos();
@@ -124,6 +131,10 @@ class Board {
 			}
 		}
 		this.#garphicEngine.loadMatrix(this.#privateMatrix);
+		let that = this;
+		if(!this.#stop)
+			window.requestAnimationFrame(that.updateGraphics.bind(this));
+
 	}
 	
 }

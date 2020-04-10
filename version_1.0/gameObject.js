@@ -52,27 +52,31 @@ class Player extends GameObject {
 	}
 
     handleEvent(event){
-        if(event.type == 'keydown'){
-            switch (event.key) {
-            case "a":
-                this.speedX = -4; 
+        switch(event.type){
+            case 'keydown':
+                switch (event.key) {
+                    case "a":
+                        this.speedX = -5; 
+                        break;
+                    case "d":
+                        this.speedX = 5; 
+                        break;
+                    case "w":
+                         this.speedY = -5; 
+                        break;
+                    case "s":
+                        this.speedY = 5; 
+                        break;
+                }
+                break 
+            case 'keyup':
+                this.speedY = 0;
+                this.speedX = 0;
                 break;
-            case "d":
-                this.speedX = 4; 
-                break;
-            case "w":
-                 this.speedY = -4; 
-                break;
-            case "s":
-                this.speedY = 4; 
-
-                break;
-            } 
-        } else if (event.type == 'keyup'){
-            this.speedY = 0;
-            this.speedX = 0;
         }
     }
+
+    onColilision
 
 
 }

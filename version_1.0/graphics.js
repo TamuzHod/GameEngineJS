@@ -46,7 +46,7 @@ class Graphics {
 		let size = sizeH < sizeW ? sizeH : sizeW;
 		let colorNew = new RGBColor(color);
 		this.#privateC_Context.fillStyle = colorNew.toRGB();
-		this.#privateC_Context.fillRect(x*size , y*size, size-1, size-1)
+		this.#privateC_Context.fillRect(x*size , y*size, size, size)
 	}
 }
 

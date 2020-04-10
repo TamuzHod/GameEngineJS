@@ -1,7 +1,8 @@
+let board;
 
-function run(){
+function makeGame(){
 	let gameClock = 1;
-	let dimentions = [200,200];
+	let dimentions = [300,300];
 	let gameBoard;
 	let refrashRate = 25;
 	let gameOver = false;
@@ -25,9 +26,15 @@ function run(){
 	}
 	let player = new Player(20,20,3, 'blue');
 	gameObjects.push(player);
-	let board = new  Board(dimentions[0], dimentions[1], gameObjects, 'white', canvasID = 'gc');
-	board.startGame();
+	board = new  Board(dimentions[0], dimentions[1], gameObjects, 'white', canvasID = 'gc');
+}
 
+function pauseGame(){
+	board.pauseGame();
+}
+
+function startGame(){
+	board.startGame();
 }
 
 function randInt(min, max){

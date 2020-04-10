@@ -2,23 +2,46 @@
 <html>
 	<head>
 		<title>Math</title>
+		<style>
+
+			.container {
+				height: 125px;
+				width: 600px;
+				display: flex;
+				background-color: white;
+				border: 1px;
+				border-style: solid;
+			}
+
+			.one {
+				flex: 0 0 50%;
+			}
+
+			.two {
+				flex: 1;
+			}
+		</style>
 	</head>
 	<body>
 
-		<button onclick="run()">Run</button>
-		<canvas id='gc' width="600" height="600"></canvas>
+		
+		<canvas id='gc' width="600px" height="600px" style="border:1px solid #000000;"> </canvas>
 
 	
-		<div id="output_div">
-			<p>Here is what I can tell about your input:</p>
-		</div>
+		<section class="container">
+		  <div class="one">
+		  	<p id='gameName'> Test game </p>
+		  	<p id='lives'> 1 </p>
+		  	<button onclick="makeGame()">Make Game</button>
+		  </div>
+		  <div class="two">
+		  	<p id='numberOfEnteties'> 0 </p>
+		  	<p id='Misc'> stuff </p>
+		  	<button onclick="startGame()">Start Game</button>
+		  	<button onclick="pauseGame()">Pause Game</button>
+		  </div>
+		</section>
 
-		<p>Enter row here:</p>
-		<input id='input_row'/>
-		<p>Enter col here:</p>
-		<input id='input_col'/>
-		<p>Enter size:</p>
-		<input id='input_size'/>
 
 		<script src="graphics.js"></script>
 		<script src="board.js"></script>
