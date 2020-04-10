@@ -20,9 +20,28 @@ class Board {
 	    this.#garphicEngine = new Graphics(canvasID);
 	}
 
+	eventDelegator(event){
+		this.gameObjects.forEach(function (entity){
+			if(entity.handleEvent){
+				entity.handleEvent(event);
+			}
+		});
+
+	}
+
 	startGame(){
-		setInterval(this.updatePhysics.bind(this), this.#physicsRR);
-		setInterval(this.updateGraphics.bind(this), this.#graphicsRR);
+		let that = this;
+		setInterval(that.updatePhysics.bind(this), this.#physicsRR);
+		setInterval(that.updateGraphics.bind(this), this.#graphicsRR);
+		window.addEventListener('keydown', function (e) {
+            that.eventDelegator(e);
+        })
+        window.addEventListener('keypress', function (e) {
+            that.eventDelegator(e);
+        })
+        window.addEventListener('keyup', function (e) {
+            that.eventDelegator(e);
+        })
 	}
 
 	getPos(){
@@ -50,8 +69,6 @@ class Board {
 					}
 				}
 			}
-
-
 		});
 		return posDic;
 	}

@@ -34,9 +34,52 @@ class GameObject {
 
 }
 
+class Player extends GameObject {
+	constructor(x,y,z, color){
+		super(x,y,z,0,0, color, 
+            [
+            [-1,-1,1,1,1,-1,-1],
+			[-1,-1,1,1,1,-1,-1],
+			[-1,-1,1,1,1,-1,-1],
+			[-1,-1,1,1,1,-1,-1],
+			[1,1,1,1,1,1,1],
+			[1,1,1,1,1,1,1],
+			[1,1,1,1,1,1,1],
+			[1,1,1,1,1,1,1],
+			[1,1,1,1,1,1,1],
+			[1,1,1,1,1,1,1]
+			]);
+	}
+
+    handleEvent(event){
+        if(event.type == 'keydown'){
+            switch (event.key) {
+            case "a":
+                this.speedX = -4; 
+                break;
+            case "d":
+                this.speedX = 4; 
+                break;
+            case "w":
+                 this.speedY = -4; 
+                break;
+            case "s":
+                this.speedY = 4; 
+
+                break;
+            } 
+        } else if (event.type == 'keyup'){
+            this.speedY = 0;
+            this.speedX = 0;
+        }
+    }
+
+
+}
+
 class Alien extends GameObject {
 	constructor(x,y,z, color){
-		super(x,y,z,0.002,0.002, color, 
+		super(x,y,z,10,-20, color, 
 			[
 			[1,1,1],
 			[-1,1,-1],
