@@ -1,11 +1,11 @@
 class Graphics {
 	#privateC;
-	#privateC_Context;
+	#privateCTX;
 	#privateLastScene;
 	#privateDimentions;
 	constructor(canvasID = 'gc') {
 		this.#privateC = document.getElementById(canvasID);
-	    this.#privateC_Context = this.#privateC.getContext('2d');
+	    this.#privateCTX = this.#privateC.getContext('2d');
 	    this.j = 0;
 	}
 
@@ -14,7 +14,7 @@ class Graphics {
 	}
 
 	loadScene(Scene_){
-		this.privateDimentions = [Scene_[0].length, Scene_.length]
+		this.#privateDimentions = [Scene_[0].length, Scene_.length]
 		this.update(Scene_);
 		this.#privateLastScene = Scene_
 	}
@@ -24,30 +24,30 @@ class Graphics {
 	update(newScene){
 		this.j++;
 		console.time(this.j);
-		let diffMap = getDiffs(newScene);
-	    this.#privateC_Context.clearRect(0, 0, this.#privateC.width, this.#privateC.height);
-		this.fillGrid();
+		// let diffMap = getDiffs(newScene);
+	    this.#privateCTX.clearRect(0, 0, this.#privateC.width, this.#privateC.height);
+		this.fillGrid(newScene);
 		console.timeEnd(this.j);
 	}
 
-	fillGrid(){
-		let binary = this.#privateScene.some(item => item.some(item => item !== 0  && item != 1));
-		for(let c=0; c<this.privateDimentions[0]; c++){
-			for(let r=0; r<this.privateDimentions[1]; r++){
-				if(binary)
-					this.fillCell(c,r,this.privateDimentions, this.#privateScene[r][c])
-				else
-					this.fillCell(c,r,this.privateDimentions, this.#privateScene[r][c] == 0 ? 'white' : 'black')
-
+	fillGrid(newScene){
+		let imageData = this.#privateCTX.getImageData(0, 0, 600,600);
+		let pixels = imageData.data;
+		let off;
+		for(let col=0; col<newScene[0].length; col++){
+			for(let row=0; row<newScene.length; row++){
+				let r = newScene[col][row];
+				let g = 0;
+				let b = 0;
+				off = (col *this.#privateC.width + row) * 4;
+				pixels[off] = r;
+			    pixels[off + 1] = g;
+			    pixels[off + 2] = b;
+			    pixels[off + 3] = 255;
 			}
 		}
+		this.#privateCTX.putImageData(imageData, 0, 0);
 	}
 
-	fillCell(x,y, dimentions, color){
-		let sizeW = this.#privateC.width/(dimentions[0]);
-		let sizeH = this.#privateC.height/(dimentions[1]);
-		let size = sizeH < sizeW ? sizeH : sizeW;
-		this.#privateC_Context.fillStyle = color;
-		this.#privateC_Context.fillRect(x*size , y*size, size, size)
-	}
+	
 }

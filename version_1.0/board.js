@@ -1,7 +1,7 @@
 class Board {
 	#privateC;
-	#privateC_Context;
-	#privateMatrix;
+	#privateCTX;
+	#privateScene;
 	#physicsRR =  Math.floor(2);
 	#garphicEngine;
 	#dimentionsX;
@@ -10,10 +10,10 @@ class Board {
 	#stop = true;
 
 
-	constructor(dimentionsX, dimentionsY, gameObjects, backgroundColor = 'white', canvasID = 'gc') {
+	constructor(dimentionsX=600, dimentionsY=600, gameObjects, backgroundColor = 'white', canvasID = 'gc') {
 		this.#privateC = document.getElementById(canvasID);
-	    this.#privateC_Context = this.#privateC.getContext('2d');
-	    this.#privateMatrix = Array(dimentionsX).fill(Array(dimentionsY));
+	    this.#privateCTX = this.#privateC.getContext('2d');
+	    this.#privateScene = Array(dimentionsX).fill(Array(dimentionsY));
 	    this.#dimentionsX = dimentionsX;
 	    this.#dimentionsY = dimentionsY;
 	    this.gameObjects = gameObjects;
@@ -110,27 +110,27 @@ class Board {
 	}
 
 	updateGraphics(){
-		this.#privateMatrix = []; //Array(this.#privateMatrix[0].length).fill(Array(this.#privateMatrix.length));
+		this.#privateScene = []; //Array(this.#privateScene[0].length).fill(Array(this.#privateScene.length));
 		for (var i = 0; i < this.#dimentionsY; i++) {
-		    this.#privateMatrix[i] = [];
+		    this.#privateScene[i] = [];
 		    for (var j = 0; j < this.#dimentionsX; j++) {
-		        this.#privateMatrix[i][j] = null;
+		        this.#privateScene[i][j] = null;
 		    }
 		}
 		let posDic = this.getPos();
 
 		for (const [pos_str, value] of Object.entries(posDic)) {
 			let pos = pos_str.split`,`.map(x=>+x);
-			if(!this.#privateMatrix[pos[1]][pos[0]] || this.#privateMatrix[pos[1]][pos[0]].z < pos[2]){
-				this.#privateMatrix[pos[1]][pos[0]] = {color : value.color, z : pos[2]};
+			if(!this.#privateScene[pos[1]][pos[0]] || this.#privateScene[pos[1]][pos[0]].z < pos[2]){
+				this.#privateScene[pos[1]][pos[0]] = {color : value.color, z : pos[2]};
 			}
 		}
-		for (var i = this.#privateMatrix[0].length - 1; i >= 0; i--) {
-			for (var j = this.#privateMatrix.length - 1; j >= 0; j--) {
-				this.#privateMatrix[j][i] = this.#privateMatrix[j][i] != null ? this.#privateMatrix[j][i].color : this.backgroundColor; 
+		for (var i = this.#privateScene[0].length - 1; i >= 0; i--) {
+			for (var j = this.#privateScene.length - 1; j >= 0; j--) {
+				this.#privateScene[j][i] = this.#privateScene[j][i] != null ? this.#privateScene[j][i].color : this.backgroundColor; 
 			}
 		}
-		this.#garphicEngine.loadMatrix(this.#privateMatrix);
+		this.#garphicEngine.loadScene(this.#privateScene);
 		let that = this;
 		if(!this.#stop)
 			window.requestAnimationFrame(that.updateGraphics.bind(this));
