@@ -31,15 +31,19 @@ class Board {
 	#stop = true;
 
 
-	constructor(dimentionsX=600, dimentionsY=600, gameObjects, backgroundColor = 'white', canvasID = 'gc') {
+	constructor(dimentionsX=600, dimentionsY=600, gameObjects,backImg=null, backgroundColor = 'white', canvasID = 'gameC', backCanvasId='backGroundC') {
 		this.#privateC = document.getElementById(canvasID);
 	    this.#privateCTX = this.#privateC.getContext('2d');
 	    this.#privateScene = Array(dimentionsX).fill(Array(dimentionsY));
 	    this.#dimentionsX = dimentionsX;
 	    this.#dimentionsY = dimentionsY;
 	    this.gameObjects = gameObjects;
-	    this.backgroundColor = typeof backgroundColor  == "string" ? colorToRGBA(backgroundColor) : backgroundColor;
-	    this.#garphicEngine = new Graphics(canvasID);
+	    if(backImg){
+	    	this.backgroundColor = [0,0,0,0];
+	    }
+	    else 
+	    	this.backgroundColor = typeof backgroundColor  == "string" ? colorToRGBA(backgroundColor) : backgroundColor;
+	    this.#garphicEngine = new Graphics(canvasID,backCanvasId,backImg, dimentionsX, dimentionsY);
 
 	}
 
@@ -135,9 +139,6 @@ class Board {
 				});
 			});
 		}
-
-		posDic = this.getPos();
-
 	}
 
 	updateGraphics(){

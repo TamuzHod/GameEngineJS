@@ -3,10 +3,36 @@ class Graphics {
 	#privateCTX;
 	#privateLastScene;
 	#privateDimentions;
-	constructor(canvasID = 'gc') {
+	#privateBackGroundC
+
+	constructor(canvasID,canvasBackID, backImgSrc=null, dimX, dimY) {
 		this.#privateC = document.getElementById(canvasID);
+		let parentDiv = this.#privateC.parentNode;
+		parentDiv.style.width = dimX + 'px';
+		parentDiv.style.height = dimY+ 'px';
+		this.#privateC.width  = dimX/2;
+  		this.#privateC.height = dimY/2;
+
+
 	    this.#privateCTX = this.#privateC.getContext('2d');
+	    this.#privateBackGroundC = document.getElementById(canvasBackID);
+		this.#privateBackGroundC.width  = dimX;
+  		this.#privateBackGroundC.height = dimY;
+
+  		if(backImgSrc){
+  			let backImg = new Image();
+			backImg.src = backImgSrc;
+			backImg.onload = this.drawBackGround(backImg);
+
+  		}
+
+  		
 	    this.j = 0;
+	}
+
+	drawBackGround(backImg){
+		let ctx = this.#privateBackGroundC.getContext('2d');
+		ctx.drawImage(backImg, 0, 0, this.#privateBackGroundC.width,this.#privateBackGroundC.height);
 	}
 
 	addMouseEvent(event, func){
@@ -31,19 +57,21 @@ class Graphics {
 	}
 
 	fillGrid(newScene){
-		let imageData = this.#privateCTX.getImageData(0, 0, 600,600);
+		let imageData = this.#privateCTX.getImageData(0, 0, this.#privateC.width,this.#privateC.height);
 		let pixels = imageData.data;
 		let off;
-		for(let col=0; col<newScene[0].length; col++){
-			for(let row=0; row<newScene.length; row++){
+		for(let col=0; col<newScene.length; col++){
+			for(let row=0; row<newScene[0].length; row++){
 				let r = newScene[col][row][0];
 				let g = newScene[col][row][1];
 				let b = newScene[col][row][2];
+				let o = newScene[col][row][3];
+
 				off = (col *this.#privateC.width + row) * 4;
 				pixels[off] = r;
 			    pixels[off + 1] = g;
 			    pixels[off + 2] = b;
-			    pixels[off + 3] = 255;
+			    pixels[off + 3] = o;
 			}
 		}
 		this.#privateCTX.putImageData(imageData, 0, 0);

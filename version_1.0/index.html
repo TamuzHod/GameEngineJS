@@ -20,12 +20,37 @@
 			.two {
 				flex: 1;
 			}
+
+			#wrapperC
+			{
+			    position:relative;  
+			    width: 600px;
+			    height: 600px;  
+			}
+
+			#gameC
+			{
+			    position:absolute;
+			    z-index:1;
+			    border: 1px;
+				border-style: solid;
+			}
+			#backGroundC
+			{
+			    position:absolute;
+			    top:0px;
+			    left:0px;
+			    border-style: solid;
+			    z-index:0;
+			}
 		</style>
 	</head>
 	<body>
 
-		
-		<canvas id='gc' width="600px" height="600px" style="border:1px solid #000000;"> </canvas>
+		<div id="wrapperC">
+			<canvas id='gameC'> </canvas>
+			<canvas id='backGroundC'> </canvas>
+		</div>
 
 	
 		<section class="container">
