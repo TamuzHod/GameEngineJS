@@ -10,9 +10,21 @@ function makeGame(){
 			
 
 	let gameObjects = [];
-	let player = new Player(20,20,3, 255);
+	for(let i=0; i<5; i++){
+		let sprit = [[-1,1,-1], [1,1,1],[-1,1,-1],[-1,1,-1], [1,1,1],[-1,1,-1]];
+		let x = randInt(0,dimentions[0]);
+		let y = randInt(0,dimentions[1]);
+		let z = randInt(0,3);
+		let speedX = Math.random() * 5;
+		let speedY = Math.random() * 5;
+		let alien = new GameObject(x,y,1,speedX,speedY,'green', sprit);
+		let alien2 = new Alien(x,y,0, 'red');
+		gameObjects.push(alien);
+		gameObjects.push(alien2);
+	}
+	let player = new Player(20,20,3, 'blue');
 	gameObjects.push(player);
-	board = new  Board(dimentions[0], dimentions[1], gameObjects, 0, canvasID = 'gc');
+	board = new  Board(dimentions[0], dimentions[1], gameObjects, 'white', canvasID = 'gc');
 }
 
 function pauseGame(){

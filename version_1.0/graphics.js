@@ -36,9 +36,9 @@ class Graphics {
 		let off;
 		for(let col=0; col<newScene[0].length; col++){
 			for(let row=0; row<newScene.length; row++){
-				let r = newScene[col][row];
-				let g = 0;
-				let b = 0;
+				let r = newScene[col][row][0];
+				let g = newScene[col][row][1];
+				let b = newScene[col][row][2];
 				off = (col *this.#privateC.width + row) * 4;
 				pixels[off] = r;
 			    pixels[off + 1] = g;

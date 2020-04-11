@@ -1,3 +1,24 @@
+
+function colorToRGBA(color) {
+    // Returns the color as an array of [r, g, b, a] -- all range from 0 - 255
+    // color must be a valid canvas fillStyle. This will cover most anything
+    // you'd want to use.
+    // Examples:
+    // colorToRGBA('red')  # [255, 0, 0, 255]
+    // colorToRGBA('#f00') # [255, 0, 0, 255]
+    var cvs, ctx;
+    cvs = document.createElement('canvas');
+    cvs.height = 1;
+    cvs.width = 1;
+    ctx = cvs.getContext('2d');
+    ctx.fillStyle = color;
+    ctx.fillRect(0, 0, 1, 1);
+    return ctx.getImageData(0, 0, 1, 1).data;
+}
+
+
+
+
 class Board {
 	#privateC;
 	#privateCTX;
@@ -17,9 +38,18 @@ class Board {
 	    this.#dimentionsX = dimentionsX;
 	    this.#dimentionsY = dimentionsY;
 	    this.gameObjects = gameObjects;
-	    this.backgroundColor = backgroundColor;
+	    this.backgroundColor = typeof backgroundColor  == "string" ? colorToRGBA(backgroundColor) : backgroundColor;
 	    this.#garphicEngine = new Graphics(canvasID);
+
 	}
+
+	// call this if colors ever change
+	fixCollors(){
+		this.gameObjects.forEach(function (entity) {
+			entity.color = typeof entity.color  == "string" ? colorToRGBA(entity.color) : entity.color;
+		});
+	}
+
 
 	eventDelegator(event){
 		event.preventDefault();
@@ -32,6 +62,7 @@ class Board {
 	}
 
 	startGame(){
+		this.fixCollors(); //I know this is ugly
 		let that = this;
 		this.#physicsLoop = setInterval(that.updatePhysics.bind(this), this.#physicsRR);
 		window.requestAnimationFrame(that.updateGraphics.bind(this));
