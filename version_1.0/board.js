@@ -41,7 +41,7 @@ class Board {
 	    if(backImg){
 	    	this.backgroundColor = [0,0,0,0];
 	    }
-	    else 
+	    else
 	    	this.backgroundColor = typeof backgroundColor  == "string" ? colorToRGBA(backgroundColor) : backgroundColor;
 	    this.#garphicEngine = new Graphics(canvasID,backCanvasId,backImg, dimentionsX, dimentionsY);
 
@@ -91,23 +91,23 @@ class Board {
 		const posDic = {};
 		const that = this;
 		this.gameObjects.forEach(function (entity, index) {
-			let sprit = entity.draw();
-			let i_start = sprit.pos[0] - sprit.centerGrav[0];
-			let j_start = sprit.pos[1] - sprit.centerGrav[1];
-			let z = sprit.pos[2];
-			for(let i= i_start; i< i_start+sprit.shape[0].length; i++){
-				for(let j= j_start; j< j_start+sprit.shape.length; j++){
+			let spirit = entity.draw();
+			let scale = spirit.scale || 10;
+			let i_start = spirit.pos[0] - spirit.centerGrav[0];
+			let j_start = spirit.pos[1] - spirit.centerGrav[1];
+			let z = spirit.pos[2];
+			for(let i= i_start; i< i_start+spirit.shape[0].length * scale; i++){
+				for(let j= j_start; j< j_start+spirit.shape.length *scale; j++){
 					if(i < 0 || j < 0 || i >= that.#dimentionsX || j >= that.#dimentionsY)
 						continue;
-					if(sprit.shape[j-j_start][i-i_start] == -1)
+					if(spirit.shape[Math.floor((j-j_start) / scale)][Math.floor((i-i_start) / scale)] == -1)
 						continue;
-
-					if([i,j,z] in posDic){
-						posDic[[i,j,z]].ids.push(index);
-					} else{
-						posDic[[i,j,z]] = {
-							color : sprit.color,
-							ids : [index]
+					if ([i, j, z] in posDic) {
+						posDic[[i, j, z]].ids.push(index);
+					} else {
+						posDic[[i, j, z]] = {
+							color: spirit.color,
+							ids: [index]
 						}
 					}
 				}
@@ -117,13 +117,12 @@ class Board {
 	}
 
 	updatePhysics(){
-		let posDic = this.getPos();
 
 		this.gameObjects.forEach(function (entity) {
 			entity.update();
 		});
 
-		posDic = this.getPos();
+		let posDic = this.getPos();
 
 		let collisions = {};
 		for (const obj of Object.values(posDic)) {
@@ -139,6 +138,8 @@ class Board {
 				});
 			});
 		}
+		posDic = this.getPos();
+
 	}
 
 	updateGraphics(){
@@ -159,7 +160,7 @@ class Board {
 		}
 		for (var i = this.#privateScene[0].length - 1; i >= 0; i--) {
 			for (var j = this.#privateScene.length - 1; j >= 0; j--) {
-				this.#privateScene[j][i] = this.#privateScene[j][i] != null ? this.#privateScene[j][i].color : this.backgroundColor; 
+				this.#privateScene[j][i] = this.#privateScene[j][i] != null ? this.#privateScene[j][i].color : this.backgroundColor;
 			}
 		}
 		this.#garphicEngine.loadScene(this.#privateScene);
@@ -168,5 +169,5 @@ class Board {
 			window.requestAnimationFrame(that.updateGraphics.bind(this));
 
 	}
-	
+
 }
