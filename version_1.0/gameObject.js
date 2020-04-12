@@ -59,16 +59,16 @@ class Player extends GameObject {
             case 'keydown':
                 switch (event.key) {
                     case "ArrowLeft":
-                        this.speedX = -10; 
+                        this.speedX = -0.5; 
                         break;
                     case "ArrowRight":
-                        this.speedX = 10; 
+                        this.speedX = 0.5; 
                         break;
                     case "ArrowUp":
-                         this.speedY = -10; 
+                         this.speedY = -0.5; 
                         break;
                     case "ArrowDown":
-                        this.speedY = 10; 
+                        this.speedY = 0.5; 
                         break;
                 }
                 break 
