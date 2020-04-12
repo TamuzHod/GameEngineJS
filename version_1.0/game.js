@@ -2,12 +2,12 @@ let board;
 
 function makeGame(){
 	let gameClock = 1;
-	let dimentions = [600,600];
+	let dimentions = [1200,600];
 	let gameBoard;
 	let refrashRate = 25;
 	let gameOver = false;
 	let score = 0
-			
+
 
 	let gameObjects = [];
 	for(let i=0; i<5; i++){
