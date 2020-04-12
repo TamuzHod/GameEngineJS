@@ -3,7 +3,7 @@ class Graphics {
 	#privateCTX;
 	#privateLastScene;
 	#privateDimentions;
-	#privateBackGroundC
+	#privateBackGroundC;
 
 	constructor(canvasID,canvasBackID, backImgSrc=null, dimX, dimY) {
 		this.#privateC = document.getElementById(canvasID);
@@ -22,7 +22,7 @@ class Graphics {
   		if(backImgSrc){
   			let backImg = new Image();
   			let that = this;
-  			backImg.onload = function(){ 
+  			backImg.onload = function(){
   				that.drawBackGround(backImg);
   			};
 			backImg.src = backImgSrc;
@@ -30,8 +30,10 @@ class Graphics {
 			backImg.height = dimY
   		}
 
-  		
-	    this.j = 0;
+
+	    this.frameCount = 0;
+  		this.fps = 0;
+  		this.ts = new Date();
 	}
 
 	drawBackGround(backImg){
@@ -40,7 +42,7 @@ class Graphics {
 	}
 
 	addMouseEvent(event, func){
-		this.#privateC.addEventListener(event, func); 
+		this.#privateC.addEventListener(event, func);
 	}
 
 	loadScene(Scene_){
@@ -52,12 +54,19 @@ class Graphics {
 
 
 	update(newScene){
-		this.j++;
-		console.time(this.j);
+		this.frameCount++;
+		const start = new Date();
 		// let diffMap = getDiffs(newScene);
 	    this.#privateCTX.clearRect(0, 0, this.#privateC.width, this.#privateC.height);
 		this.fillGrid(newScene);
-		console.timeEnd(this.j);
+		const now = new Date();
+		if((now - this.ts) > 1000) {
+			this.fps = this.frameCount;
+			this.frameCount = 0;
+			this.ts = now;
+		}
+		const info = `Frame rendering: ${(new Date() - start)} ms   fps: ${this.fps}`;
+		document.getElementById("Misc").innerHTML = info;
 	}
 
 	fillGrid(newScene){
@@ -81,5 +90,5 @@ class Graphics {
 		this.#privateCTX.putImageData(imageData, 0, 0);
 	}
 
-	
+
 }
