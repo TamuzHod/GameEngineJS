@@ -2,7 +2,7 @@ let board;
 
 function makeGame(){
 	let gameClock = 1;
-	let dimentions = [700,700];
+	let dimentions = [600,600];
 	let gameBoard;
 	let refrashRate = 25;
 	let gameOver = false;
@@ -24,7 +24,7 @@ function makeGame(){
 	}
 	let player = new Player(20,20,3, 'blue');
 	gameObjects.push(player);
-	board = new  Board(dimentions[0], dimentions[1], gameObjects,backImg=null, backgroundColor='blue');
+	board = new  Board(dimentions[0], dimentions[1], gameObjects,backImg='img.jpg', backgroundColor=null);
 }
 
 function pauseGame(){

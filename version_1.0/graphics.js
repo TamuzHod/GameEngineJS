@@ -10,8 +10,8 @@ class Graphics {
 		let parentDiv = this.#privateC.parentNode;
 		parentDiv.style.width = dimX + 'px';
 		parentDiv.style.height = dimY+ 'px';
-		this.#privateC.width  = dimX/2;
-  		this.#privateC.height = dimY/2;
+		this.#privateC.width  = dimX;
+  		this.#privateC.height = dimY;
 
 
 	    this.#privateCTX = this.#privateC.getContext('2d');
@@ -21,9 +21,13 @@ class Graphics {
 
   		if(backImgSrc){
   			let backImg = new Image();
+  			let that = this;
+  			backImg.onload = function(){ 
+  				that.drawBackGround(backImg);
+  			};
 			backImg.src = backImgSrc;
-			backImg.onload = this.drawBackGround(backImg);
-
+			backImg.width = dimX;
+			backImg.height = dimY
   		}
 
   		
@@ -32,7 +36,7 @@ class Graphics {
 
 	drawBackGround(backImg){
 		let ctx = this.#privateBackGroundC.getContext('2d');
-		ctx.drawImage(backImg, 0, 0, this.#privateBackGroundC.width,this.#privateBackGroundC.height);
+		ctx.drawImage(backImg, 0, 0, this.#privateBackGroundC.width, this.#privateBackGroundC.height);
 	}
 
 	addMouseEvent(event, func){
