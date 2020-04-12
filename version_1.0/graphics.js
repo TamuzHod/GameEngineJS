@@ -3,7 +3,7 @@ class Graphics {
 	#privateCTX;
 	#privateLastScene;
 	#privateDimentions;
-	#privateBackGroundC
+	#privateBackGroundC;
 
 	constructor(scaleFactor, canvasID,canvasBackID, backImgSrc=null, dimX, dimY) {
 		this.#privateC = document.getElementById(canvasID);
@@ -30,7 +30,7 @@ class Graphics {
   		if(backImgSrc){
   			let backImg = new Image();
   			let that = this;
-  			backImg.onload = function(){ 
+  			backImg.onload = function(){
   				that.drawBackGround(backImg);
   			};
 			backImg.src = backImgSrc;
@@ -38,8 +38,10 @@ class Graphics {
 			backImg.height = dimY
   		}
 
-  		
-	    this.j = 0;
+
+	    this.frameCount = 0;
+  		this.fps = 0;
+  		this.ts = new Date();
 	}
 
 	drawBackGround(backImg){
@@ -48,7 +50,7 @@ class Graphics {
 	}
 
 	addMouseEvent(event, func){
-		this.#privateC.addEventListener(event, func); 
+		this.#privateC.addEventListener(event, func);
 	}
 
 	loadScene(Scene_){
@@ -89,7 +91,7 @@ class Graphics {
 		this.#privateCTX.drawImage(this.tempCanvas,0,0,this.tempCanvas.width, this.tempCanvas.height, 0, 0, this.#privateC.width, this.#privateC.height);
 	}
 
-	
+
 }
 
 function toggleSmoothing(ctx){
