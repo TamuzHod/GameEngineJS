@@ -43,6 +43,8 @@ class Graphics {
 	    this.frameCount = 0;
   		this.fps = 0;
   		this.ts = new Date();
+  		this.physicCount = 0;
+  		this.PPS = 0;
 	}
 
 
@@ -56,9 +58,7 @@ class Graphics {
 	}
 
 	loadScene(Scene_){
-		this.#privateDimentions = [Scene_[0].length, Scene_.length]
 		this.update(Scene_);
-		this.#privateLastScene = Scene_
 	}
 
 
@@ -73,30 +73,36 @@ class Graphics {
 			this.fps = this.frameCount;
 			this.frameCount = 0;
 			this.ts = now;
+			this.PPS = this.physicCount;
+			this.physicCount = 0;
 		}
-		const info = `Frame rendering: ${(new Date() - start)} ms   fps: ${this.fps}`;
+		const info = `Frame rendering: ${(new Date() - start)} ms   fps: ${this.fps}   PhysPS: ${this.PPS}`;
 		document.getElementById("Misc").innerHTML = info;
 	}
 
-	fillGrid(newScene){
-		// let imageData = this.tctx.getImageData(0, 0, this.tempCanvas.width,this.tempCanvas.height);
-		let imageData = this.#privateCTX.getImageData(0, 0, this.#privateC.width,this.#privateC.height);
-		let pixels = imageData.data;
-		let off;
-		for(let col=0; col<newScene.length; col++){
-			for(let row=0; row<newScene[0].length; row++){
-				let r = newScene[col][row][0];
-				let g = newScene[col][row][1];
-				let b = newScene[col][row][2];
-				let o = newScene[col][row][3];
+	getImgData(){
+		return  this.#privateCTX.getImageData(0, 0, this.#privateC.width,this.#privateC.height);;
+	}
 
-				off = (col *this.#privateC.width + row) * 4;
-				pixels[off] = r;
-			    pixels[off + 1] = g;
-			    pixels[off + 2] = b;
-			    pixels[off + 3] = o;
+	fillGrid(posDic){
+		// let imageData = this.tctx.getImageData(0, 0, this.tempCanvas.width,this.tempCanvas.height);
+		const posColorMap = new EquivalentKeyMap();
+		let imageData = new ImageData(this.tempCanvas.width, this.tempCanvas.height);
+		let off;
+		let rgbo;
+		let that = this;
+		posDic.forEach(function(value, pos){
+			if (!posColorMap.has([pos[0], pos[1]]) || posColorMap.get([pos[0], pos[1]]) < pos[2]){
+
+				posColorMap.set([pos[0], pos[1]], pos[2]);
+
+				off = (pos[1] * that.tempCanvas.width + pos[0]) * 4;
+				imageData.data[off] = value.color[0];
+			    imageData.data[off + 1] = value.color[1];
+			    imageData.data[off + 2] = value.color[2];
+			    imageData.data[off + 3] = value.color[3];
 			}
-		}
+		});
 		this.#privateCTX.putImageData(imageData, 0, 0);
 		this.#privateC.style.transformOrigin = '0 0'; //scale from top left
 		this.#privateC.style.transform = 'scale(' + this.scaleFactor + ')';
@@ -109,8 +115,8 @@ class Graphics {
 }
 
 function toggleSmoothing(ctx){
-	ctx.imageSmoothingEnabled = !ctx.imageSmoothingEnabled;
-    ctx.mozImageSmoothingEnabled = !ctx.imageSmoothingEnabled;
-    ctx.webkitImageSmoothingEnabled = !ctx.imageSmoothingEnabled;
-    ctx.msImageSmoothingEnabled = !ctx.imageSmoothingEnabled;
+	// ctx.imageSmoothingEnabled = false;
+ //    ctx.mozImageSmoothingEnabled = false;
+ //    ctx.webkitImageSmoothingEnabled = false;
+ //    ctx.msImageSmoothingEnabled = false;
 }

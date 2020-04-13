@@ -32,16 +32,13 @@
 			{
 			    position:absolute;
 			    z-index:1;
-			    border: 1px;
-				border-style: solid;
+			    image-rendering: pixelated;
 			}
 			#backGroundC
 			{
 			    position:absolute;
 			    top:0px;
 			    left:0px;
-			    border-style: solid;
-			    z-index:0;
 			}
 		</style>
 	</head>
@@ -66,8 +63,9 @@
 		  	<button onclick="Controller.pauseGame()">Pause Game</button>
 		  </div>
 		</section>
-
-
+		
+		<script src="engine/equivalent-key-map.min.js"></script>
+		<script src="engine/math.js" type="text/javascript"></script>
 		<script src="engine/graphics.js"></script>
 		<script src="engine/board.js"></script>
 		<script src="engine/gameObject.js"></script>
