@@ -20,6 +20,7 @@ class Graphics {
 		this.tempCanvas.height=dimY;
 
 
+
 	    this.#privateCTX = this.#privateC.getContext('2d');
 	    toggleSmoothing(this.#privateCTX);
 
