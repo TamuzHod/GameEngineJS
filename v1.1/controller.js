@@ -5,7 +5,7 @@ class Controller {
 	static init() {
 		let game = new MyGame();
 		Controller.game = game;
-		Controller.board = new Board(game.canvasW, game.canvasH, game.gameObjects, game.backgroundImg, game.backgroundColor);
+		Controller.board = new Board(1,game.canvasW, game.canvasH, game.gameObjects, game.backgroundImg, game.backgroundColor);
 		document.getElementById('gameName').innerText = Controller.game.name;
 	}
 

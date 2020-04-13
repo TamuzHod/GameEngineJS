@@ -5,19 +5,28 @@ class Graphics {
 	#privateDimentions;
 	#privateBackGroundC;
 
-	constructor(canvasID,canvasBackID, backImgSrc=null, dimX, dimY) {
+	constructor(scaleFactor, canvasID,canvasBackID, backImgSrc=null, dimX, dimY) {
 		this.#privateC = document.getElementById(canvasID);
 		let parentDiv = this.#privateC.parentNode;
-		parentDiv.style.width = dimX + 'px';
-		parentDiv.style.height = dimY+ 'px';
-		this.#privateC.width  = dimX;
-  		this.#privateC.height = dimY;
+		this.scaleFactor = scaleFactor;
+		parentDiv.style.width  = dimX * scaleFactor+ 'px';
+		parentDiv.style.height = dimY * scaleFactor + 'px';
+		this.#privateC.width  = dimX;// * scaleFactor;
+  		this.#privateC.height = dimY;// * scaleFactor;
+  		this.tempCanvas=document.createElement("canvas");
+		this.tctx=this.tempCanvas.getContext("2d");
+
+		this.tempCanvas.width=dimX;
+		this.tempCanvas.height=dimY;
+
 
 
 	    this.#privateCTX = this.#privateC.getContext('2d');
+	    toggleSmoothing(this.#privateCTX);
+
 	    this.#privateBackGroundC = document.getElementById(canvasBackID);
-		this.#privateBackGroundC.width  = dimX;
-  		this.#privateBackGroundC.height = dimY;
+		this.#privateBackGroundC.width  = dimX * scaleFactor;
+  		this.#privateBackGroundC.height = dimY * scaleFactor;
 
   		if(backImgSrc){
   			let backImg = new Image();
@@ -36,6 +45,7 @@ class Graphics {
   		this.ts = new Date();
 	}
 
+
 	drawBackGround(backImg){
 		let ctx = this.#privateBackGroundC.getContext('2d');
 		ctx.drawImage(backImg, 0, 0, this.#privateBackGroundC.width, this.#privateBackGroundC.height);
@@ -50,7 +60,6 @@ class Graphics {
 		this.update(Scene_);
 		this.#privateLastScene = Scene_
 	}
-
 
 
 	update(newScene){
@@ -70,6 +79,7 @@ class Graphics {
 	}
 
 	fillGrid(newScene){
+		// let imageData = this.tctx.getImageData(0, 0, this.tempCanvas.width,this.tempCanvas.height);
 		let imageData = this.#privateCTX.getImageData(0, 0, this.#privateC.width,this.#privateC.height);
 		let pixels = imageData.data;
 		let off;
@@ -88,7 +98,19 @@ class Graphics {
 			}
 		}
 		this.#privateCTX.putImageData(imageData, 0, 0);
+		this.#privateC.style.transformOrigin = '0 0'; //scale from top left
+		this.#privateC.style.transform = 'scale(' + this.scaleFactor + ')';
+		// this.tctx.putImageData(imageData, 0, 0);
+		// this.#privateCTX.clearRect(0,0, this.#privateC.width, this.#privateC.height);
+		// this.#privateCTX.drawImage(this.tempCanvas,0,0,this.tempCanvas.width, this.tempCanvas.height, 0, 0, this.#privateC.width, this.#privateC.height);
 	}
 
 
+}
+
+function toggleSmoothing(ctx){
+	ctx.imageSmoothingEnabled = !ctx.imageSmoothingEnabled;
+    ctx.mozImageSmoothingEnabled = !ctx.imageSmoothingEnabled;
+    ctx.webkitImageSmoothingEnabled = !ctx.imageSmoothingEnabled;
+    ctx.msImageSmoothingEnabled = !ctx.imageSmoothingEnabled;
 }

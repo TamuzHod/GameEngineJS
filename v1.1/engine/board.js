@@ -23,7 +23,7 @@ class Board {
 	#privateC;
 	#privateCTX;
 	#privateScene;
-	#physicsRR =  Math.floor(2);
+	#physicsTickLength =  10;
 	#garphicEngine;
 	#dimentionsX;
 	#dimentionsY;
@@ -31,7 +31,7 @@ class Board {
 	#stop = true;
 
 
-	constructor(dimentionsX=600, dimentionsY=600, gameObjects,backImg=null, backgroundColor = 'white', canvasID = 'gameC', backCanvasId='backGroundC') {
+	constructor(scaleFactor=5, dimentionsX=600, dimentionsY=600, gameObjects,backImg=null, backgroundColor = 'white', canvasID = 'gameC', backCanvasId='backGroundC') {
 		this.#privateC = document.getElementById(canvasID);
 	    this.#privateCTX = this.#privateC.getContext('2d');
 	    this.#privateScene = Array(dimentionsX).fill(Array(dimentionsY));
@@ -43,7 +43,9 @@ class Board {
 	    }
 	    else
 	    	this.backgroundColor = typeof backgroundColor  == "string" ? colorToRGBA(backgroundColor) : backgroundColor;
-	    this.#garphicEngine = new Graphics(canvasID,backCanvasId,backImg, dimentionsX, dimentionsY);
+	    this.#garphicEngine = new Graphics(scaleFactor, canvasID,backCanvasId,backImg, dimentionsX, dimentionsY);
+	    this.phyicCounter=0;
+	    this.graphicCounter=0;
 
 	}
 
@@ -68,7 +70,7 @@ class Board {
 	startGame(){
 		this.fixCollors(); //I know this is ugly
 		let that = this;
-		this.#physicsLoop = setInterval(that.updatePhysics.bind(this), this.#physicsRR);
+		this.#physicsLoop = setInterval(that.updatePhysics.bind(this), this.#physicsTickLength);
 		window.requestAnimationFrame(that.updateGraphics.bind(this));
 		window.addEventListener('keydown', function (e) {
             that.eventDelegator(e);
@@ -87,12 +89,12 @@ class Board {
 		this.#stop = true;
 	}
 
-	getPos(){
-		const posDic = {};
+	getPos_scale(){
+		const posDic = new Map();
 		const that = this;
 		this.gameObjects.forEach(function (entity, index) {
 			let spirit = entity.draw();
-			let scale = spirit.scale || 1;
+			let scale = spirit.scale || 10;
 			let i_start = spirit.pos[0] - spirit.centerGrav[0];
 			let j_start = spirit.pos[1] - spirit.centerGrav[1];
 			let z = spirit.pos[2];
@@ -100,15 +102,43 @@ class Board {
 				for(let j= j_start; j< j_start+spirit.shape.length *scale; j++){
 					if(i < 0 || j < 0 || i >= that.#dimentionsX || j >= that.#dimentionsY)
 						continue;
-					if(spirit.shape[Math.floor((j-j_start) / scale)][Math.floor((i-i_start) / scale)] == -1)
+					if(spirit.shape[((j-j_start) / scale) | 0][((i-i_start) / scale) | 0] == -1)
 						continue;
-					if ([i, j, z] in posDic) {
-						posDic[[i, j, z]].ids.push(index);
+					if (posDic.has([i, j, z])) {
+						posDic.get([i, j, z]).ids.push(index);
 					} else {
-						posDic[[i, j, z]] = {
+						posDic.set([i, j, z],{
 							color: spirit.color,
 							ids: [index]
-						}
+						});
+					}
+				}
+			}
+		});
+		return posDic;
+	}
+
+	getPos(){
+		const posDic = new Map();
+		const that = this;
+		this.gameObjects.forEach(function (entity, index) {
+			let spirit = entity.draw();
+			let i_start = spirit.pos[0] - spirit.centerGrav[0];
+			let j_start = spirit.pos[1] - spirit.centerGrav[1];
+			let z = spirit.pos[2];
+			for(let i= i_start; i< i_start+spirit.shape[0].length; i++){
+				for(let j= j_start; j< j_start+spirit.shape.length; j++){
+					if(i < 0 || j < 0 || i >= that.#dimentionsX || j >= that.#dimentionsY)
+						continue;
+					if(spirit.shape[(j-j_start)][(i-i_start)] == -1)
+						continue;
+					if (posDic.has([i, j, z])) {
+						posDic.get([i, j, z]).ids.push(index);
+					} else {
+						posDic.set([i, j, z],{
+							color: spirit.color,
+							ids: [index]
+						});
 					}
 				}
 			}
@@ -117,57 +147,59 @@ class Board {
 	}
 
 	updatePhysics(){
-
+		this.phyicCounter++;
 		this.gameObjects.forEach(function (entity) {
 			entity.update();
 		});
 
 		let posDic = this.getPos();
 
-		let collisions = {};
-		for (const obj of Object.values(posDic)) {
+		let collisions = new Map();
+		for (const obj of posDic.values()) {
 			if(obj.ids.length < 1)
 				continue;
 			obj.ids.forEach(function (id_0) {
 				obj.ids.forEach(function (id_1) {
-					if(id_0 in collisions){
-						collisions[id_0][id_1] = true;
+					if(collisions.has(id_0)){
+						collisions.get(id_0).set(id_1, true);
 					} else{
-						collisions[id_0] = {id_1 : true};
+						collisions.set(id_0, new Map([[id_1, true]]));
 					}
 				});
 			});
 		}
-		posDic = this.getPos();
-
 	}
 
 	updateGraphics(){
-		this.#privateScene = []; //Array(this.#privateScene[0].length).fill(Array(this.#privateScene.length));
-		for (var i = 0; i < this.#dimentionsY; i++) {
-		    this.#privateScene[i] = [];
-		    for (var j = 0; j < this.#dimentionsX; j++) {
-		        this.#privateScene[i][j] = null;
-		    }
-		}
-		let posDic = this.getPos();
+		
 
-		for (const [pos_str, value] of Object.entries(posDic)) {
-			let pos = pos_str.split`,`.map(x=>+x);
-			if(!this.#privateScene[pos[1]][pos[0]] || this.#privateScene[pos[1]][pos[0]].z < pos[2]){
-				this.#privateScene[pos[1]][pos[0]] = {color : value.color, z : pos[2]};
+		this.graphicCounter++;
+		if(this.graphicCounter % 3 == 0){
+			console.time('updateGraphics');
+			this.#privateScene = []; //Array(this.#privateScene[0].length).fill(Array(this.#privateScene.length));
+			for (var i = 0; i < this.#dimentionsY; i++) {
+			    this.#privateScene[i] = [];
+			    for (var j = 0; j < this.#dimentionsX; j++) {
+			        this.#privateScene[i][j] = null;
+			    }
 			}
-		}
-		for (var i = this.#privateScene[0].length - 1; i >= 0; i--) {
-			for (var j = this.#privateScene.length - 1; j >= 0; j--) {
-				this.#privateScene[j][i] = this.#privateScene[j][i] != null ? this.#privateScene[j][i].color : this.backgroundColor;
+			let posDic = this.getPos();
+			for (const [pos, value] of posDic) {
+				if(!this.#privateScene[pos[1]][pos[0]] || this.#privateScene[pos[1]][pos[0]].z < pos[2]){
+					this.#privateScene[pos[1]][pos[0]] = {color : value.color, z : pos[2]};
+				}
 			}
+			for (var i = this.#privateScene[0].length - 1; i >= 0; i--) {
+				for (var j = this.#privateScene.length - 1; j >= 0; j--) {
+					this.#privateScene[j][i] = this.#privateScene[j][i] != null ? this.#privateScene[j][i].color : this.backgroundColor;
+				}
+			}
+			console.timeEnd('updateGraphics');
+			this.#garphicEngine.loadScene(this.#privateScene);
 		}
-		this.#garphicEngine.loadScene(this.#privateScene);
 		let that = this;
 		if(!this.#stop)
 			window.requestAnimationFrame(that.updateGraphics.bind(this));
-
 	}
 
 }
