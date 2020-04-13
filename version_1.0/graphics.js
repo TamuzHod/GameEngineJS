@@ -5,19 +5,28 @@ class Graphics {
 	#privateDimentions;
 	#privateBackGroundC;
 
-	constructor(canvasID,canvasBackID, backImgSrc=null, dimX, dimY) {
+	constructor(scaleFactor, canvasID,canvasBackID, backImgSrc=null, dimX, dimY) {
 		this.#privateC = document.getElementById(canvasID);
 		let parentDiv = this.#privateC.parentNode;
-		parentDiv.style.width = dimX + 'px';
-		parentDiv.style.height = dimY+ 'px';
-		this.#privateC.width  = dimX;
-  		this.#privateC.height = dimY;
+		this.scaleFactor = scaleFactor;
+		parentDiv.style.width  = dimX * scaleFactor+ 'px';
+		parentDiv.style.height = dimY * scaleFactor + 'px';
+		this.#privateC.width  = dimX * scaleFactor;
+  		this.#privateC.height = dimY * scaleFactor;
+  		this.tempCanvas=document.createElement("canvas");
+		this.tctx=this.tempCanvas.getContext("2d");
+
+		this.tempCanvas.width=dimX;
+		this.tempCanvas.height=dimY;
+
 
 
 	    this.#privateCTX = this.#privateC.getContext('2d');
+	    toggleSmoothing(this.#privateCTX);
+
 	    this.#privateBackGroundC = document.getElementById(canvasBackID);
-		this.#privateBackGroundC.width  = dimX;
-  		this.#privateBackGroundC.height = dimY;
+		this.#privateBackGroundC.width  = dimX * scaleFactor;
+  		this.#privateBackGroundC.height = dimY * scaleFactor;
 
   		if(backImgSrc){
   			let backImg = new Image();
@@ -54,19 +63,9 @@ class Graphics {
 
 
 	update(newScene){
-		this.frameCount++;
-		const start = new Date();
 		// let diffMap = getDiffs(newScene);
-	    this.#privateCTX.clearRect(0, 0, this.#privateC.width, this.#privateC.height);
+	    this.#privateCTX.clearRect(0, 0, newScene.length, newScene[0].length);
 		this.fillGrid(newScene);
-		const now = new Date();
-		if((now - this.ts) > 1000) {
-			this.fps = this.frameCount;
-			this.frameCount = 0;
-			this.ts = now;
-		}
-		const info = `Frame rendering: ${(new Date() - start)} ms   fps: ${this.fps}`;
-		document.getElementById("Misc").innerHTML = info;
 	}
 
 	fillGrid(newScene){
@@ -87,8 +86,18 @@ class Graphics {
 			    pixels[off + 3] = o;
 			}
 		}
-		this.#privateCTX.putImageData(imageData, 0, 0);
+
+		this.tctx.putImageData(imageData, 0, 0);
+		this.#privateCTX.clearRect(0,0, this.#privateC.width, this.#privateC.height);
+		this.#privateCTX.drawImage(this.tempCanvas,0,0,this.tempCanvas.width, this.tempCanvas.height, 0, 0, this.#privateC.width, this.#privateC.height);
 	}
 
 
+}
+
+function toggleSmoothing(ctx){
+	ctx.imageSmoothingEnabled = !ctx.imageSmoothingEnabled;
+    ctx.mozImageSmoothingEnabled = !ctx.imageSmoothingEnabled;
+    ctx.webkitImageSmoothingEnabled = !ctx.imageSmoothingEnabled;
+    ctx.msImageSmoothingEnabled = !ctx.imageSmoothingEnabled;
 }
