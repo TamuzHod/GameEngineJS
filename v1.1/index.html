@@ -1,0 +1,83 @@
+<!DOCType HTML>
+<html>
+	<head>
+		<title>Math</title>
+		<style>
+
+			.container {
+				height: 125px;
+				width: 600px;
+				display: flex;
+				background-color: white;
+				border: 1px;
+				border-style: solid;
+			}
+
+			.one {
+				flex: 0 0 50%;
+			}
+
+			.two {
+				flex: 1;
+			}
+
+			#wrapperC
+			{
+			    position:relative;
+			    width: 600px;
+			    height: 600px;
+			}
+
+			#gameC
+			{
+			    position:absolute;
+			    z-index:1;
+			    border: 1px;
+				border-style: solid;
+			}
+			#backGroundC
+			{
+			    position:absolute;
+			    top:0px;
+			    left:0px;
+			    border-style: solid;
+			    z-index:0;
+			}
+		</style>
+	</head>
+	<body onload="Controller.init()">
+
+		<div id="wrapperC">
+			<canvas id='gameC'> </canvas>
+			<canvas id='backGroundC'> </canvas>
+		</div>
+
+
+		<section class="container">
+		  <div class="one">
+		  	<p id='gameName'> Test game </p>
+		  	<p id='lives'> 1 </p>
+		  	<button onclick="makeGame()">Make Game</button>
+		  </div>
+		  <div class="two">
+		  	<p id='numberOfEnteties'> 0 </p>
+		  	<p id='Misc'> stuff </p>
+		  	<button onclick="Controller.startGame()">Start Game</button>
+		  	<button onclick="Controller.pauseGame()">Pause Game</button>
+		  </div>
+		</section>
+
+
+		<script src="engine/graphics.js"></script>
+		<script src="engine/board.js"></script>
+		<script src="engine/gameObject.js"></script>
+		<script src="engine/game.js"></script>
+
+		<script src="games/MyGame/objects/player.js"></script>
+		<script src="games/MyGame/objects/alien.js"></script>
+		<script src="games/MyGame/MyGame.js"></script>
+
+		<script src="controller.js"></script>
+
+	</body>
+</html>
