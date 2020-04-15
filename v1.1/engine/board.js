@@ -39,6 +39,12 @@ class Board {
 	    this.#dimentionsX = dimentionsX;
 	    this.#dimentionsY = dimentionsY;
 	    this.gameObjects = gameObjects;
+	    this.gameObjectsMap = {};
+	    for(let i = 0; i< gameObjects.length; i++) {
+	    	const obj = gameObjects[i];
+	    	this.gameObjectsMap[obj.id] = obj;
+		}
+
 	    if(backImg){
 	    	this.backgroundColor = [0,0,0,0];
 	    }
@@ -50,7 +56,7 @@ class Board {
 
 	// call this if colors ever change
 	fixCollors(){
-		this.gameObjects.forEach(function (entity) {
+		this.gameObjects.filter( (entity) => entity.active).forEach(function (entity) {
 			entity.color = typeof entity.color  == "string" ? colorToRGBA(entity.color) : entity.color;
 		});
 	}
@@ -58,7 +64,7 @@ class Board {
 
 	eventDelegator(event){
 		event.preventDefault();
-		this.gameObjects.forEach(function (entity){
+		this.gameObjects.filter( (entity) => entity.active).forEach(function (entity){
 			if(entity.handleEvent){
 				entity.handleEvent(event);
 			}
@@ -91,7 +97,7 @@ class Board {
 	getPos(){
 		const posDic = new EquivalentKeyMap();
 		const that = this;
-		this.gameObjects.forEach(function (entity, index) {
+		this.gameObjects.filter( (entity) => entity.active).forEach(function (entity) {
 			let spirit = entity.draw();
 			let i_start = spirit.pos[0] - spirit.centerGrav[0];
 			let j_start = spirit.pos[1] - spirit.centerGrav[1];
@@ -103,11 +109,11 @@ class Board {
 					if(spirit.shape[(j-j_start)][(i-i_start)] <= 0)
 						continue;
 					if (posDic.has([i, j, z])) {
-						posDic.get([i, j, z]).ids.push(index);
+						posDic.get([i, j, z]).ids.push(entity.id);
 					} else {
 						posDic.set([i, j, z],{
 							color: spirit.color,
-							ids: [index]
+							ids: [entity.id]
 						});
 					}
 				}
@@ -119,7 +125,7 @@ class Board {
 	updatePhysics(){
 
 		this.#garphicEngine.physicCount++;
-		this.gameObjects.forEach(function (entity) {
+		this.gameObjects.filter( (entity) => entity.active).forEach(function (entity) {
 			entity.update();
 		});
 
@@ -131,6 +137,8 @@ class Board {
 				return;
 			value.ids.forEach(function (id_0) {
 				value.ids.forEach(function (id_1) {
+					if(id_1 === id_0)
+						return;
 					if(collisions.has(id_0)){
 						collisions.get(id_0).set(id_1, true);
 					} else{
@@ -138,6 +146,10 @@ class Board {
 					}
 				});
 			});
+		});
+
+		collisions.forEach((collisionMap, id) => {
+			this.gameObjects[id].onCollision && this.gameObjectsMap[id].onCollision(collisionMap);
 		});
 	}
 

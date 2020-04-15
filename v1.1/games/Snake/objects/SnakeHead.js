@@ -1,6 +1,21 @@
 class SnakeHead extends GameObject {
+
 	constructor(x, y) {
 		super({x,y,color: 'blue', spirit: [[1]]});
+	}
+
+	onCollision(collisionMap) {
+		collisionMap.forEach( (value, id) => {
+			const obj = Controller.game.gameObjects[id];
+			if(obj instanceof Fruit) {
+				obj.active = false;
+				const {x,y} = Controller.game.getRandomFreePos();
+
+				Controller.updateScore(Controller.game.score + 20);
+			} else if(obj instanceof Border || obj instanceof SnakeBodyPart) {
+				Controller.gameOver();
+			}
+		})
 	}
 
 	handleEvent(event){

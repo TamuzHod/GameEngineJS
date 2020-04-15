@@ -18,6 +18,11 @@ class Controller {
 		Controller.board && Controller.board.startGame();
 	}
 
+	static gameOver(){
+		Controller.board && Controller.board.pauseGame();
+		Controller.updateLife(Controller.game.life -1);
+	}
+
 	static updateLife(value) {
 		Controller.game.life = value;
 		document.getElementById('lives').innerText = `Lives: ${Controller.game.life}`;

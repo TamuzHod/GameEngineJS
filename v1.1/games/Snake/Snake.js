@@ -17,17 +17,17 @@ class Snake extends Game {
 		// }
 
 		super({name: 'Snake', gameObjects, width, height, scaleFactor: 30});
+	}
 
-		function getRandomFreePos(width, height) {
-			const occupieds = Controller.getOccupieds();
-			let x, y;
-			do {
-				x = Math.floor(Math.random() * width);
-				y = Math.floor(Math.random() * height);
+	getRandomFreePos() {
+		const occupieds = Controller.getOccupieds();
+		let x, y;
+		do {
+			x = Math.floor(Math.random() * this.width);
+			y = Math.floor(Math.random() * this.height);
 
-			} while (occupieds.get([x,y,0]));
-			return {x,y};
-		}
+		} while (occupieds.get([x,y,0]));
+		return {x,y};
 	}
 
 }

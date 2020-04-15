@@ -13,7 +13,7 @@ class GameObject {
 		this.scale = scale;
 		this.centerGravX = centerGrav != null ? centerGrav[0] : Math.floor(spirit[0].length / 2);
 		this.centerGravY = centerGrav != null ? centerGrav[1] : Math.floor(spirit.length / 2);
-
+		this.active = true;
 		this.id = GameObject.counter++;
 	}
 
