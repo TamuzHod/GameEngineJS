@@ -3,10 +3,11 @@ class Controller {
 	static board;
 
 	static init() {
-		let game = new MyGame();
+		let game = new Snake();
 		Controller.game = game;
-		Controller.board = new Board(2,game.canvasW, game.canvasH, game.gameObjects, game.backgroundImg, game.backgroundColor);
+		Controller.board = new Board(game.scaleFactor, game.width, game.height, game.gameObjects, game.backgroundImg, game.backgroundColor);
 		document.getElementById('gameName').innerText = Controller.game.name;
+		Controller.updateState();
 	}
 
 	static pauseGame(){
@@ -22,8 +23,28 @@ class Controller {
 		document.getElementById('lives').innerText = `Lives: ${Controller.game.life}`;
 	}
 
+	static updateScore(value) {
+		Controller.game.score = value;
+		document.getElementById('score').innerText = `Score: ${Controller.game.score}`;
+	}
+
+	static updateLevel(value) {
+		Controller.game.level = value;
+		document.getElementById('level').innerText = `Level: ${Controller.game.level}`;
+	}
+
 	static updateStatistics(message) {
 		document.getElementById('Misc').innerText = message;
+	}
+
+	static 	updateState() {
+		Controller.updateLevel(Controller.game.level);
+		Controller.updateLife(Controller.game.life);
+		Controller.updateScore(Controller.game.score);
+	}
+
+	static getOccupieds() {
+		return Controller.bord && Controller.bord.getPos() || new Map();
 	}
 
 }

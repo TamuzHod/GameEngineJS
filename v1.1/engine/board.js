@@ -100,7 +100,7 @@ class Board {
 				for(let j= j_start; j< j_start+spirit.shape.length; j++){
 					if(i < 0 || j < 0 || i >= that.#dimentionsX || j >= that.#dimentionsY)
 						continue;
-					if(spirit.shape[(j-j_start)][(i-i_start)] == -1)
+					if(spirit.shape[(j-j_start)][(i-i_start)] <= 0)
 						continue;
 					if (posDic.has([i, j, z])) {
 						posDic.get([i, j, z]).ids.push(index);
@@ -142,7 +142,7 @@ class Board {
 	}
 
 	updateGraphics(){
-		
+
 		let that = this;
 		if(this.graphicCounter++ % 2 == 0){
 			console.time('updateGraphics');

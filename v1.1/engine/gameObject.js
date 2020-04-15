@@ -2,7 +2,7 @@
 class GameObject {
 	static counter = 0;
 
-	constructor({x,y,z,speedX,speedY,color, spirit, scale=1, centerGrav = null}) {
+	constructor({x,y,z= 0,speedX = 0,speedY = 0,color, spirit, scale=1, centerGrav = null}) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
