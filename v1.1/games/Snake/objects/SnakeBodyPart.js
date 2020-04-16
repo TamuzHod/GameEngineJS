@@ -6,12 +6,13 @@ class SnakeBodyPart extends GameObject {
 		this.lastY = y;
 	}
 
-	// update() {
-	// 	if(this.next.lastX != Math.floor(this.next.x) || this.next.lastY != Math.floor(this.next.y)){
-	// 		this.lastX = Math.floor(this.x);
-	// 		this.lastY = Math.floor(this.y);
-	// 		this.x += this.next.lastX;
-	// 		this.y += this.next.lastY;	
-	// 	}
-	// }
+	update() {
+		if(this.next.lastX != Math.round(this.next.x) || this.next.lastY != Math.round(this.next.y)){
+			this.lastX = Math.round(this.x);
+			this.lastY = Math.round(this.y);
+			this.x = this.next.lastX;
+			this.y = this.next.lastY;	
+			console.log()
+		}
+	}
 }

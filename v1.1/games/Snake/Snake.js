@@ -9,16 +9,18 @@ class Snake extends Game {
 		gameObjects.push(head);
 		let bodyPart = new SnakeBodyPart(4,10,head);
 		gameObjects.push(bodyPart);
-		bodyPart = new SnakeBodyPart(3,10,bodyPart);
-		gameObjects.push(bodyPart);
+		const lastBodyPart = new SnakeBodyPart(3,10,bodyPart);
+		gameObjects.push(lastBodyPart);
 		gameObjects.push(new Fruit(16,10));
 		gameObjects.push(new Border());
+
 		// for(let i = 0; i< 10; i++) {
 		// 	const {x,y} = getRandomFreePos(width, height);
 		// 	gameObjects.push(new Fruit(x,y));
 		// }
 
 		super({name: 'Snake', gameObjects, width, height, scaleFactor: 30});
+		this.lastBodyPart = lastBodyPart;
 	}
 
 	getRandomFreePos() {

@@ -7,8 +7,8 @@ class SnakeHead extends GameObject {
 	}
 
 	update() {
-		this.lastX = Math.floor(this.x);
-		this.lastY = Math.floor(this.y);
+		this.lastX = Math.round(this.x);
+		this.lastY = Math.round(this.y);
 		super.update();
 	}
 
@@ -17,6 +17,12 @@ class SnakeHead extends GameObject {
 			const obj = Controller.board.getEntityByID(id);
 			if(obj instanceof Fruit) {
 				obj.active = false;
+
+				const {x:lastX, y:lastY} = Controller.game.lastBodyPart;
+				const newLast = new SnakeBodyPart(lastX,lastY, Controller.game.lastBodyPart);
+				Controller.board.addEntity(newLast);
+				Controller.game.lastBodyPart = newLast;
+
 				const {x,y} = Controller.game.getRandomFreePos();
 				Controller.board.addEntity(new Fruit(x,y));
 				Controller.updateScore(Controller.game.score + 20);
