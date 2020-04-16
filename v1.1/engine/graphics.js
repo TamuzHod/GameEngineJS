@@ -22,7 +22,7 @@ class Graphics {
 
 
 	    this.#privateCTX = this.#privateC.getContext('2d');
-	    toggleSmoothing(this.#privateCTX);
+	    toggleSmoothing(this.#privateC, this.#privateCTX);
 
 	    this.#privateBackGroundC = document.getElementById(canvasBackID);
 		this.#privateBackGroundC.width  = dimX * scaleFactor;
@@ -114,9 +114,9 @@ class Graphics {
 
 }
 
-function toggleSmoothing(ctx){
-	// ctx.imageSmoothingEnabled = false;
- //    ctx.mozImageSmoothingEnabled = false;
- //    ctx.webkitImageSmoothingEnabled = false;
- //    ctx.msImageSmoothingEnabled = false;
+function toggleSmoothing(canvas, ctx){
+	ctx.imageSmoothingEnabled = false;
+    ctx.mozImageSmoothingEnabled = false;
+    ctx.webkitImageSmoothingEnabled = false;
+    ctx.msImageSmoothingEnabled = false;
 }

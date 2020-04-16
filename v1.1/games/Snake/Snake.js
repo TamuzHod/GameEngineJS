@@ -5,10 +5,12 @@ class Snake extends Game {
 		const height = 20;
 
 		const gameObjects = [];
-
-		gameObjects.push(new SnakeHead(5,10));
-		gameObjects.push(new SnakeBodyPart(4,10));
-		gameObjects.push(new SnakeBodyPart(3,10));
+		const head = new SnakeHead(5,10);
+		gameObjects.push(head);
+		let bodyPart = new SnakeBodyPart(4,10,head);
+		gameObjects.push(bodyPart);
+		bodyPart = new SnakeBodyPart(3,10,bodyPart);
+		gameObjects.push(bodyPart);
 		gameObjects.push(new Fruit(16,10));
 		gameObjects.push(new Border());
 		// for(let i = 0; i< 10; i++) {

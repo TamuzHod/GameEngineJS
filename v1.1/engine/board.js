@@ -1,25 +1,4 @@
 
-
-function colorToRGBA(color) {
-    // Returns the color as an array of [r, g, b, a] -- all range from 0 - 255
-    // color must be a valid canvas fillStyle. This will cover most anything
-    // you'd want to use.
-    // Examples:
-    // colorToRGBA('red')  # [255, 0, 0, 255]
-    // colorToRGBA('#f00') # [255, 0, 0, 255]
-    var cvs, ctx;
-    cvs = document.createElement('canvas');
-    cvs.height = 1;
-    cvs.width = 1;
-    ctx = cvs.getContext('2d');
-    ctx.fillStyle = color;
-    ctx.fillRect(0, 0, 1, 1);
-    return ctx.getImageData(0, 0, 1, 1).data;
-}
-
-
-
-
 class Board {
 	#privateC;
 	#privateCTX;
@@ -39,10 +18,11 @@ class Board {
 	    this.#dimentionsX = dimentionsX;
 	    this.#dimentionsY = dimentionsY;
 	    this.gameObjects = gameObjects;
-	    this.gameObjectsMap = {};
+	    this.gameObjectsMap = new Map();
 	    for(let i = 0; i< gameObjects.length; i++) {
 	    	const obj = gameObjects[i];
-	    	this.gameObjectsMap[obj.id] = obj;
+	    	obj.color = typeof obj.color  == "string" ? colorToRGBA(obj.color) : obj.color;
+	    	this.gameObjectsMap.set(obj.id,obj);
 		}
 
 	    if(backImg){
@@ -54,11 +34,36 @@ class Board {
 	    this.graphicCounter=0;
 	}
 
+	deleteEntity(entityID){
+		this.gameObjectsMap.get(entityID).active = false;
+	}
+
+	addEntity(entity){
+		this.fixColor(entity);
+		this.gameObjects.push(entity)
+		this.gameObjectsMap.set(entity.id, entity);
+	}
+
+	getEntityByID(entityID){
+		return this.gameObjectsMap.get(entityID);
+	}
+
+	cleanEntityMap(){
+		let newEntityList = [];
+		for(let i = 0; i< this.gameObjects.length; i++) {
+			const obj = this.gameObjects[i];
+			if(obj.active){
+				newEntityList.push(obj)
+			} else{
+	    		this.gameObjectsMap.delete(obj.id);
+			}
+		}
+		this.gameObjects = newEntityList;
+	}
+
 	// call this if colors ever change
-	fixCollors(){
-		this.gameObjects.filter( (entity) => entity.active).forEach(function (entity) {
-			entity.color = typeof entity.color  == "string" ? colorToRGBA(entity.color) : entity.color;
-		});
+	fixColor(entity){
+		return entity.color = typeof entity.color  == "string" ? colorToRGBA(entity.color) : entity.color;
 	}
 
 
@@ -72,8 +77,13 @@ class Board {
 
 	}
 
+	resumeGame(){
+		this.#stop = false;
+		let that = this;
+		this.#physicsLoop = setInterval(that.updatePhysics.bind(this), this.#physicsTickLength);
+	}
+
 	startGame(){
-		this.fixCollors(); //I know this is ugly
 		let that = this;
 		this.#physicsLoop = setInterval(that.updatePhysics.bind(this), this.#physicsTickLength);
 		window.requestAnimationFrame(that.updateGraphics.bind(this));
@@ -149,21 +159,38 @@ class Board {
 		});
 
 		collisions.forEach((collisionMap, id) => {
-			this.gameObjects[id].onCollision && this.gameObjectsMap[id].onCollision(collisionMap);
+			this.gameObjectsMap.get(id).onCollision && this.gameObjectsMap.get(id).onCollision(collisionMap);
 		});
 	}
 
 	updateGraphics(){
-
+		if(this.#stop)
+			return;
+		if(this.graphicCounter % 10 == 0)			
+				this.cleanEntityMap();
 		let that = this;
 		if(this.graphicCounter++ % 2 == 0){
-			console.time('updateGraphics');
 			let posDic = this.getPos();
-			console.timeEnd('updateGraphics');
 			this.#garphicEngine.loadScene(posDic);
 		}
-		if(!this.#stop)
-			window.requestAnimationFrame(that.updateGraphics.bind(this));
+		window.requestAnimationFrame(that.updateGraphics.bind(this));
 	}
 
+}
+
+function colorToRGBA(color) {
+    // Returns the color as an array of [r, g, b, a] -- all range from 0 - 255
+    // color must be a valid canvas fillStyle. This will cover most anything
+    // you'd want to use.
+    // Examples:
+    // colorToRGBA('red')  # [255, 0, 0, 255]
+    // colorToRGBA('#f00') # [255, 0, 0, 255]
+    var cvs, ctx;
+    cvs = document.createElement('canvas');
+    cvs.height = 1;
+    cvs.width = 1;
+    ctx = cvs.getContext('2d');
+    ctx.fillStyle = color;
+    ctx.fillRect(0, 0, 1, 1);
+    return ctx.getImageData(0, 0, 1, 1).data;
 }
