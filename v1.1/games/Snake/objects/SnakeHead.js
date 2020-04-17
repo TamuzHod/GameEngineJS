@@ -1,9 +1,12 @@
 class SnakeHead extends GameObject {
 
-	constructor(x, y) {
+	static turnSound = new Audio("games/Snake/sounds/turn.mp3");
+	constructor(x, y, speed) {
 		super({x,y,color: 'blue', spirit: [[1]]});
 		this.lastX = x;
 		this.lastY = y;
+		this.speed = speed || 0.03;
+
 	}
 
 	update() {
@@ -33,23 +36,30 @@ class SnakeHead extends GameObject {
 	}
 
 	handleEvent(event){
+		SnakeHead.turnSound.pause();
+		SnakeHead.turnSound.currentTime = 0;
+		SnakeHead.turnSound.play();
 		switch(event.type){
 			case 'keydown':
 				switch (event.key) {
 					case "ArrowLeft":
-						this.speedX = -0.05;
+						if(this.speedX) return;
+						this.speedX = -this.speed;
 						this.speedY = 0;
 						break;
 					case "ArrowRight":
-						this.speedX = 0.05;
+						if(this.speedX) return;
+						this.speedX = this.speed;
 						this.speedY = 0;
 						break;
 					case "ArrowUp":
-						this.speedY = -0.05;
+						if(this.speedY) return;
+						this.speedY = -this.speed;
 						this.speedX = 0;
 						break;
 					case "ArrowDown":
-						this.speedY = 0.05;
+						if(this.speedY) return;
+						this.speedY = this.speed;
 						this.speedX = 0;
 						break;
 				}

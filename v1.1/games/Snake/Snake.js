@@ -14,12 +14,13 @@ class Snake extends Game {
 		gameObjects.push(new Fruit(16,10));
 		gameObjects.push(new Border());
 
-		// for(let i = 0; i< 10; i++) {
-		// 	const {x,y} = getRandomFreePos(width, height);
-		// 	gameObjects.push(new Fruit(x,y));
-		// }
-
-		super({name: 'Snake', gameObjects, width, height, scaleFactor: 30});
+		super({
+			name: 'Snake',
+			gameObjects,
+			width, height,
+			scaleFactor: 30,
+			backgroundImg: 'games/Snake/images/checkboard.png',
+		});
 		this.lastBodyPart = lastBodyPart;
 	}
 
@@ -27,8 +28,8 @@ class Snake extends Game {
 		const occupieds = Controller.getOccupieds();
 		let x, y;
 		do {
-			x = Math.floor(Math.random() * this.width);
-			y = Math.floor(Math.random() * this.height);
+			x = Math.round(Math.random() * (this.width-1));
+			y = Math.round(Math.random() * (this.height-1));
 
 		} while (occupieds.get([x,y,0]));
 		return {x,y};

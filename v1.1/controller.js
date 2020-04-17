@@ -49,7 +49,7 @@ class Controller {
 	}
 
 	static getOccupieds() {
-		return Controller.bord && Controller.bord.getPos() || new Map();
+		return Controller.board && Controller.board.getPos() || new Map();
 	}
 
 }
