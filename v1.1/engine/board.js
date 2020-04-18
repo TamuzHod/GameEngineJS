@@ -74,13 +74,17 @@ class Board {
 				entity.handleEvent(event);
 			}
 		});
-
 	}
 
 	resumeGame(){
+		if(this.#stop) {
+			return;
+		}
+
 		this.#stop = false;
 		let that = this;
 		this.#physicsLoop = setInterval(that.updatePhysics.bind(this), this.#physicsTickLength);
+		window.requestAnimationFrame(that.updateGraphics.bind(this));
 	}
 
 	startGame(){
@@ -97,6 +101,7 @@ class Board {
             that.eventDelegator(e);
         })
         this.#stop = false;
+		that.updateGraphics.bind(this);
 	}
 
 	pauseGame(){
@@ -166,7 +171,7 @@ class Board {
 	updateGraphics(){
 		if(this.#stop)
 			return;
-		if(this.graphicCounter % 10 == 0)			
+		if(this.graphicCounter % 10 == 0)
 				this.cleanEntityMap();
 		let that = this;
 		if(this.graphicCounter++ % 2 == 0){

@@ -8,6 +8,7 @@ class Controller {
 		Controller.board = new Board(game.scaleFactor, game.width, game.height, game.gameObjects, game.backgroundImg, game.backgroundColor);
 		document.getElementById('gameName').innerText = Controller.game.name;
 		Controller.updateState();
+		Controller.startGame();
 	}
 
 	static pauseGame(){
@@ -15,6 +16,10 @@ class Controller {
 	}
 
 	static startGame(){
+		Controller.board && Controller.board.startGame();
+	}
+
+	static resumeGame(){
 		Controller.board && Controller.board.startGame();
 	}
 
