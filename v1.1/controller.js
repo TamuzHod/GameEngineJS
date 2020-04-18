@@ -1,30 +1,52 @@
 class Controller {
 	static game;
-	static board;
+	static engine;
 
 	static init() {
 		let game = new Snake();
 		Controller.game = game;
-		Controller.board = new Board(game.scaleFactor, game.width, game.height, game.gameObjects, game.backgroundImg, game.backgroundColor);
+		Controller.engine = new Engine(game.scaleFactor, game.width, game.height, game.gameObjects, game.backgroundImg, game.backgroundColor);
 		document.getElementById('gameName').innerText = Controller.game.name;
 		Controller.updateState();
 		Controller.startGame();
+		window.addEventListener('keydown', function (e) {
+            Controller.eventDelegator(e);
+        })
+        document.addEventListener('keypress', function (e) {
+            Controller.eventDelegator(e);
+        })
+        window.addEventListener('keyup', function (e) {
+            Controller.eventDelegator(e);
+        })
 	}
 
+	static eventDelegator(event){
+		event.preventDefault();
+		if(!Controller.engine.stop){
+			Controller.engine.gameObjects.filter( (entity) => entity.active).forEach(function (entity){
+				if(entity.handleEvent){
+					entity.handleEvent(event);
+				}
+			});
+		}
+		Controller.game.handleEvent(event);
+	}
+
+
 	static pauseGame(){
-		Controller.board && Controller.board.pauseGame();
+		Controller.engine && Controller.engine.pauseGame();
 	}
 
 	static startGame(){
-		Controller.board && Controller.board.startGame();
+		Controller.engine && Controller.engine.startGame();
 	}
 
 	static resumeGame(){
-		Controller.board && Controller.board.startGame();
+		Controller.engine && Controller.engine.startGame();
 	}
 
 	static gameOver(){
-		Controller.board && Controller.board.pauseGame();
+		Controller.engine && Controller.engine.pauseGame();
 		Controller.updateLife(Controller.game.life -1);
 	}
 
@@ -54,7 +76,7 @@ class Controller {
 	}
 
 	static getOccupieds() {
-		return Controller.board && Controller.board.getPos() || new Map();
+		return Controller.engine && Controller.engine.getPos() || new Map();
 	}
 
 }

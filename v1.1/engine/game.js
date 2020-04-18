@@ -19,6 +19,21 @@ class Game {
 		this.gameObjects = gameObjects;
 		this.scaleFactor = scaleFactor;
 	}
+
+	handleEvent(){
+		switch(event.type){
+			case 'keydown':
+				switch (event.key) {
+					case "p":
+						if(Controller.engine.stop)
+							Controller.engine.resumeGame();
+						else
+							Controller.engine.pauseGame();
+						break;
+				}
+				break;
+		}
+	}
 }
 
 

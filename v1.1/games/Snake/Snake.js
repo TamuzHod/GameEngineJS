@@ -19,7 +19,7 @@ class Snake extends Game {
 			gameObjects,
 			width, height,
 			scaleFactor: 30,
-			backgroundImg: 'games/Snake/images/checkboard.png',
+			backgroundImg: 'games/Snake/images/checkengine.png',
 		});
 		this.lastBodyPart = lastBodyPart;
 	}
