@@ -5,6 +5,7 @@ class Controller {
 	static init(game) {
 		Controller.game = game;
 		Controller.#engine = new Engine(game.scaleFactor, game.width, game.height, game.gameObjects, game.backgroundImg, game.backgroundColor);
+		document.getElementById('toggle-game').innerText = 'Pause';
 		document.getElementById('gameName').innerText = Controller.game.name;
 		Controller.updateState();
 		Controller.#engine.startGame()
