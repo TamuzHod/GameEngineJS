@@ -2,13 +2,12 @@ class Controller {
 	static game;
 	static #engine;
 
-	static init() {
-		let game = new Snake();
+	static init(game) {
 		Controller.game = game;
 		Controller.#engine = new Engine(game.scaleFactor, game.width, game.height, game.gameObjects, game.backgroundImg, game.backgroundColor);
 		document.getElementById('gameName').innerText = Controller.game.name;
 		Controller.updateState();
-		Controller.startGame();
+		Controller.#engine.startGame()
 		window.addEventListener('keydown', function (e) {
             Controller.eventDelegator(e);
         })
@@ -32,6 +31,20 @@ class Controller {
 		Controller.game.handleEvent(event);
 	}
 
+	static initGame() {
+		Controller.pauseGame();
+		const gameClassName = document.getElementById("game").value;
+		const game = eval(`new ${gameClassName}()`);
+		Controller.init(game);
+	}
+
+	static restartGame() {
+		Controller.pauseGame();
+		const gameClassName = Controller.game.constructor.name;
+		const game = eval(`new ${gameClassName}()`);
+		Controller.init(game);
+	}
+
 	static getEntityByID(id){
 		return Controller.#engine && Controller.#engine.getEntityByID(id) || null;
 	}
@@ -45,10 +58,6 @@ class Controller {
 		Controller.#engine && Controller.#engine.pauseGame();
 	}
 
-	static startGame(){
-		Controller.#engine && Controller.#engine.startGame();
-	}
-
 	static resumeGame(){
 		Controller.#engine && Controller.#engine.startGame();
 	}
@@ -58,6 +67,8 @@ class Controller {
 			return;
 
 		Controller.#engine.stop ? Controller.#engine.resumeGame() : Controller.#engine.pauseGame();
+		document.getElementById('toggle-game').innerText = Controller.#engine.stop ? 'Resume': 'Pause';
+
 	}
 
 	static gameOver(){

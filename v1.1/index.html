@@ -42,7 +42,7 @@
 			}
 		</style>
 	</head>
-	<body onload="Controller.init()">
+	<body onload="Controller.initGame()">
 
 		<div id="wrapperC">
 			<canvas id='gameC'> </canvas>
@@ -57,11 +57,16 @@
 			  <p id='lives'> 3 <p/>
 			  <p id='score'> 0 <p/>
 		  </div>
-		  <div class="two">
-		  	<p id='numberOfEnteties'> 0 </p>
-		  	<p id='Misc'> stuff </p>
-		  	<button onclick="Controller.resumeGame()">Resume Game</button>
-		  	<button onclick="Controller.pauseGame()">Pause Game</button>
+		  <div class="two" style="padding-top: 10px;">
+			  <label for="game">Choose a game:</label>
+			  <select id="game" onchange="Controller.initGame()">
+				  <option value="Snake">Snake</option>
+				  <option value="MyGame">My Game</option>
+			  </select>
+			  <p id='numberOfEnteties'> 0 </p>
+			  <p id='Misc'> stuff </p>
+			  <button onclick="Controller.toggleGame()" id="toggle-game">Pause</button>
+			  <button onclick="Controller.restartGame()">Restart Game</button>
 		  </div>
 		</section>
 
