@@ -20,17 +20,17 @@ class SnakeHead extends GameObject {
 
 	onCollision(collisionMap) {
 		collisionMap.forEach( (value, id) => {
-			const obj = Controller.engine.getEntityByID(id);
+			const obj = Controller.getEntityByID(id);
 			if(obj instanceof Fruit) {
 				obj.active = false;
 				SnakeHead.eatSound.play();
 				const {x:lastX, y:lastY} = Controller.game.lastBodyPart;
 				const newLast = new SnakeBodyPart(lastX,lastY, Controller.game.lastBodyPart);
-				Controller.engine.addEntity(newLast);
+				Controller.addEntity(newLast);
 				Controller.game.lastBodyPart = newLast;
 
 				const {x,y} = Controller.game.getRandomFreePos();
-				Controller.engine.addEntity(new Fruit(x,y));
+				Controller.addEntity(new Fruit(x,y));
 				Controller.updateScore(Controller.game.score + 20);
 			} else if(obj instanceof Border || obj instanceof SnakeBodyPart) {
 				SnakeHead.bumpSound.play();

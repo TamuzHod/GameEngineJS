@@ -1,11 +1,11 @@
 class Controller {
 	static game;
-	static engine;
+	static #engine;
 
 	static init() {
 		let game = new Snake();
 		Controller.game = game;
-		Controller.engine = new Engine(game.scaleFactor, game.width, game.height, game.gameObjects, game.backgroundImg, game.backgroundColor);
+		Controller.#engine = new Engine(game.scaleFactor, game.width, game.height, game.gameObjects, game.backgroundImg, game.backgroundColor);
 		document.getElementById('gameName').innerText = Controller.game.name;
 		Controller.updateState();
 		Controller.startGame();
@@ -22,8 +22,8 @@ class Controller {
 
 	static eventDelegator(event){
 		event.preventDefault();
-		if(!Controller.engine.stop){
-			Controller.engine.gameObjects.filter( (entity) => entity.active).forEach(function (entity){
+		if(!Controller.#engine.stop){
+			Controller.#engine.gameObjects.filter( (entity) => entity.active).forEach(function (entity){
 				if(entity.handleEvent){
 					entity.handleEvent(event);
 				}
@@ -32,28 +32,36 @@ class Controller {
 		Controller.game.handleEvent(event);
 	}
 
+	static getEntityByID(id){
+		return Controller.#engine && Controller.#engine.getEntityByID(id) || null;
+	}
+
+	static addEntity(entity){
+		Controller.#engine && Controller.#engine.addEntity(entity);
+	}
+
 
 	static pauseGame(){
-		Controller.engine && Controller.engine.pauseGame();
+		Controller.#engine && Controller.#engine.pauseGame();
 	}
 
 	static startGame(){
-		Controller.engine && Controller.engine.startGame();
+		Controller.#engine && Controller.#engine.startGame();
 	}
 
 	static resumeGame(){
-		Controller.engine && Controller.engine.startGame();
+		Controller.#engine && Controller.#engine.startGame();
 	}
 
 	static toggleGame() {
-		if(!Controller.engine)
+		if(!Controller.#engine)
 			return;
 
-		Controller.engine.stop ? Controller.engine.resumeGame() : Controller.engine.pauseGame();
+		Controller.#engine.stop ? Controller.#engine.resumeGame() : Controller.#engine.pauseGame();
 	}
 
 	static gameOver(){
-		Controller.engine && Controller.engine.pauseGame();
+		Controller.#engine && Controller.#engine.pauseGame();
 		Controller.updateLife(Controller.game.life -1);
 	}
 
@@ -83,7 +91,7 @@ class Controller {
 	}
 
 	static getOccupieds() {
-		return Controller.engine && Controller.engine.getPos() || new Map();
+		return Controller.#engine && Controller.#engine.getPos() || new Map();
 	}
 
 }
