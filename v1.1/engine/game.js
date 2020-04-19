@@ -25,10 +25,7 @@ class Game {
 			case 'keydown':
 				switch (event.key) {
 					case "p":
-						if(Controller.engine.stop)
-							Controller.engine.resumeGame();
-						else
-							Controller.engine.pauseGame();
+						Controller.toggleGame();
 						break;
 				}
 				break;

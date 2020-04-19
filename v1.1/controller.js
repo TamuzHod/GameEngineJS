@@ -45,6 +45,13 @@ class Controller {
 		Controller.engine && Controller.engine.startGame();
 	}
 
+	static toggleGame() {
+		if(!Controller.engine)
+			return;
+
+		Controller.engine.stop ? Controller.engine.resumeGame() : Controller.engine.pauseGame();
+	}
+
 	static gameOver(){
 		Controller.engine && Controller.engine.pauseGame();
 		Controller.updateLife(Controller.game.life -1);
