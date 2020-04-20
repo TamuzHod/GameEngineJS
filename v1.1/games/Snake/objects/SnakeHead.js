@@ -10,6 +10,9 @@ class SnakeHead extends GameObject {
 		this.lastY = y;
 		this.speed = speed || 0.03;
 
+		SnakeHead.turnSound.volume = 0.1;
+		SnakeHead.bumpSound.volume = 0.5;
+		SnakeHead.eatSound.volume = 0.5;
 	}
 
 	update() {
@@ -24,17 +27,10 @@ class SnakeHead extends GameObject {
 			if(obj instanceof Fruit) {
 				obj.active = false;
 				SnakeHead.eatSound.play();
-				const {x:lastX, y:lastY} = Controller.game.lastBodyPart;
-				const newLast = new SnakeBodyPart(lastX,lastY, Controller.game.lastBodyPart);
-				Controller.addEntity(newLast);
-				Controller.game.lastBodyPart = newLast;
-
-				const {x,y} = Controller.game.getRandomFreePos();
-				Controller.addEntity(new Fruit(x,y));
-				Controller.updateScore(Controller.game.score + 20);
-			} else if(obj instanceof Border || obj instanceof SnakeBodyPart) {
+				Controller.game.onEatFruit();
+			} else if(obj instanceof Border || obj instanceof Bomb || obj instanceof SnakeBodyPart) {
 				SnakeHead.bumpSound.play();
-				Controller.gameOver();
+				Controller.game.onBump();
 			}
 		})
 	}
@@ -45,7 +41,6 @@ class SnakeHead extends GameObject {
 		function playTurn() {
 			SnakeHead.turnSound.pause();
 			SnakeHead.turnSound.currentTime = 0;
-			SnakeHead.turnSound.volume = 0.1;
 			SnakeHead.turnSound.play();
 		}
 		switch(event.type){

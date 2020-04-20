@@ -2,6 +2,10 @@ class Controller {
 	static game;
 	static #engine;
 
+	static life = 3;
+	static score = 0;
+	static level = 1;
+
 	static init(game) {
 		Controller.game = game;
 		Controller.#engine = new Engine(game.scaleFactor, game.width, game.height, game.gameObjects, game.backgroundImg, game.backgroundColor);
@@ -43,6 +47,8 @@ class Controller {
 		Controller.pauseGame();
 		const gameClassName = Controller.game.constructor.name;
 		const game = eval(`new ${gameClassName}()`);
+		Controller.score = 0;
+		Controller.life  = 3;
 		Controller.init(game);
 	}
 
@@ -73,23 +79,32 @@ class Controller {
 	}
 
 	static gameOver(){
-		Controller.#engine && Controller.#engine.pauseGame();
-		Controller.updateLife(Controller.game.life -1);
+		Controller.pauseGame();
+		// TODO: game over logic
 	}
 
-	static updateLife(value) {
-		Controller.game.life = value;
-		document.getElementById('lives').innerText = `Lives: ${Controller.game.life}`;
+	static nextLevel() {
+		Controller.pauseGame();
+		const gameClassName = Controller.game.constructor.name;
+		const game = eval(`new ${gameClassName}(${++Controller.level})`);
+		Controller.init(game);
 	}
 
-	static updateScore(value) {
-		Controller.game.score = value;
-		document.getElementById('score').innerText = `Score: ${Controller.game.score}`;
+	static removeLife() {
+		Controller.life--;
+		document.getElementById('lives').innerText = `Lives: ${Controller.life}`;
+
+		if(Controller.life) {
+			Controller.initGame();
+		}
+		else {
+			Controller.gameOver();
+		}
 	}
 
-	static updateLevel(value) {
-		Controller.game.level = value;
-		document.getElementById('level').innerText = `Level: ${Controller.game.level}`;
+	static addScore(value) {
+		Controller.score += value;
+		document.getElementById('score').innerText = `Score: ${Controller.score}`;
 	}
 
 	static updateStatistics(message) {
@@ -97,9 +112,12 @@ class Controller {
 	}
 
 	static 	updateState() {
-		Controller.updateLevel(Controller.game.level);
-		Controller.updateLife(Controller.game.life);
-		Controller.updateScore(Controller.game.score);
+		document.getElementById('lives').innerText = `Lives: ${Controller.life}`;
+		document.getElementById('level').innerText = `Level: ${Controller.level}`;
+		document.getElementById('score').innerText = `Score: ${Controller.score}`;
+		// Controller.updateLevel(Controller.level);
+		// Controller.updateLife(Controller.life);
+		// Controller.addScore(0);
 	}
 
 	static getOccupieds() {
